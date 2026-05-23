@@ -1109,6 +1109,29 @@ html[data-theme="dark"] #theme-toggle::before {
 }
 
 @media (max-width: 768px) {
+  body {
+    display: block !important;
+    min-height: auto !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 0 !important;
+  }
+
+  .app-container {
+    display: block !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    min-height: auto !important;
+    height: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .app-header {
+    margin-bottom: 16px !important;
+  }
+
   .mobile-tabs {
     display: none !important; /* タブバーを非表示にする */
   }
@@ -1116,8 +1139,8 @@ html[data-theme="dark"] #theme-toggle::before {
   .app-main {
     grid-template-columns: 1fr;
     display: flex !important;
-    flex-direction: column;
-    gap: 24px;
+    flex-direction: column !important;
+    gap: 20px !important;
   }
 
   /* モバイル時は両セクションを縦積みで常に表示 */
@@ -1125,6 +1148,10 @@ html[data-theme="dark"] #theme-toggle::before {
   .sequence-section {
     display: flex !important;
     animation: fadeInTab 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .active-timer-section {
+    margin-bottom: 20px !important;
   }
 
   .sequence-card {
@@ -1139,9 +1166,9 @@ html[data-theme="dark"] #theme-toggle::before {
 
 @media (max-width: 480px) {
   .app-container {
-    margin: 8px;
-    padding: 12px;
-    gap: 16px;
+    margin: 0 !important;
+    padding: 12px !important;
+    gap: 16px !important;
   }
 
   .app-header {
