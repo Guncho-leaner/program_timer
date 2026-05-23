@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowTimer - シーケンシャル・プログラムタイマー</title>
+  <meta name="description" content="パステルカラーとグラスモルフィズムを採用した、極めてシンプルで美しい連続プログラムタイマー。ライト・ダークモード完備、Web Audio APIによるクリアなサウンド合成。">
+  
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Link -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  
+  <!-- Background Decorative Orbs (Premium visual element) -->
+  <div class="decor-orb orb-1"></div>
+  <div class="decor-orb orb-2"></div>
+  <div class="decor-orb orb-3"></div>
+
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="brand">
+        <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <h1>FlowTimer</h1>
+      </div>
+      
+      <div class="header-controls">
+        <!-- Sound/Volume Toggle -->
+        <button id="volume-toggle" class="icon-btn" aria-label="消音切り替え">
+          <svg class="icon-volume" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+        
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="icon-btn" aria-label="テーマ切り替え">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- MOBILE TABS (Visible only on mobile screens) -->
+    <nav class="mobile-tabs" id="mobile-tabs">
+      <button class="tab-btn active" data-tab="timer" type="button">
+        <svg class="tab-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>タイマー</span>
+      </button>
+      <button class="tab-btn" data-tab="sequence" type="button">
+        <svg class="tab-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"/>
+          <line x1="8" y1="12" x2="21" y2="12"/>
+          <line x1="8" y1="18" x2="21" y2="18"/>
+          <line x1="3" y1="6" x2="3.01" y2="6"/>
+          <line x1="3" y1="12" x2="3.01" y2="12"/>
+          <line x1="3" y1="18" x2="3.01" y2="18"/>
+        </svg>
+        <span>リスト編集</span>
+      </button>
+    </nav>
+
+    <!-- MAIN INTERFACE -->
+    <main class="app-main show-timer">
+      
+      <!-- LEFT SECTION: ACTIVE TIMER (Hero focus area) -->
+      <section class="active-timer-section card">
+        <div class="active-timer-status" id="active-timer-status">待機中</div>
+        
+        <div class="timer-display-wrapper">
+          <!-- Circular Progress SVG -->
+          <svg class="progress-ring" width="280" height="280" viewBox="0 0 280 280">
+            <circle class="progress-ring__track" cx="140" cy="140" r="125" stroke-width="8" />
+            <circle class="progress-ring__fill" id="progress-circle" cx="140" cy="140" r="125" stroke-width="10" stroke-linecap="round" />
+          </svg>
+          
+          <!-- Timer Text Inside -->
+          <div class="timer-text-container">
+            <div id="timer-countdown" class="timer-countdown">00:00</div>
+            <div id="timer-title" class="timer-title">プログラムを設定してください</div>
+          </div>
+        </div>
+
+        <div class="program-progress-info" id="program-progress-info">
+          タスク 0 / 0
+        </div>
+        
+        <!-- Controls underneath countdown -->
+        <div class="main-controls">
+          <button id="ctrl-prev" class="control-btn secondary" disabled aria-label="前のタイマー">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="19 20 9 12 19 4 19 20"/>
+              <line x1="5" y1="19" x2="5" y2="5"/>
+            </svg>
+          </button>
+
+          <button id="ctrl-play-pause" class="control-btn primary pulse" disabled aria-label="再生/一時停止">
+            <svg class="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+          </button>
+
+          <button id="ctrl-skip" class="control-btn secondary" disabled aria-label="次のタイマーへスキップ">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 4 15 12 5 20 5 4"/>
+              <line x1="19" y1="5" x2="19" y2="19"/>
+            </svg>
+          </button>
+
+          <button id="ctrl-reset" class="control-btn secondary" disabled aria-label="最初からリセット">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- RIGHT SECTION: SEQUENCE BUILDER & LIST -->
+      <section class="sequence-section">
+        
+        <!-- Timer Builder Form -->
+        <div class="builder-card card">
+          <div class="card-header">
+            <h2><span id="builder-title-text">タイマーの追加</span> <span class="counter" id="timer-counter">0 / 10</span></h2>
+          </div>
+          
+          <form id="add-timer-form" class="builder-form">
+            <div class="form-group name-group">
+              <label for="input-name">名前</label>
+              <input type="text" id="input-name" placeholder="（例: ワークアウト、休憩、読書）" required maxlength="20">
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="input-minutes">分</label>
+                <div class="number-input-wrapper">
+                  <input type="number" id="input-minutes" min="0" max="99" value="5" required>
+                  <span class="unit">分</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="input-seconds">秒</label>
+                <div class="number-input-wrapper">
+                  <input type="number" id="input-seconds" min="0" max="59" value="0" step="5" required>
+                  <span class="unit">秒</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>テーマカラー</label>
+              <div class="color-picker-grid" id="color-picker">
+                <!-- Colors will be dynamically selected, but we render inputs for native custom styling -->
+                <button type="button" class="color-dot active" data-color="coral" style="--dot-color: var(--col-coral);" aria-label="コーラル"></button>
+                <button type="button" class="color-dot" data-color="orange" style="--dot-color: var(--col-orange);" aria-label="オレンジ"></button>
+                <button type="button" class="color-dot" data-color="yellow" style="--dot-color: var(--col-yellow);" aria-label="イエロー"></button>
+                <button type="button" class="color-dot" data-color="sage" style="--dot-color: var(--col-sage);" aria-label="セージ"></button>
+                <button type="button" class="color-dot" data-color="teal" style="--dot-color: var(--col-teal);" aria-label="ティール"></button>
+                <button type="button" class="color-dot" data-color="sky" style="--dot-color: var(--col-sky);" aria-label="スカイ"></button>
+                <button type="button" class="color-dot" data-color="purple" style="--dot-color: var(--col-purple);" aria-label="パープル"></button>
+                <button type="button" class="color-dot" data-color="pink" style="--dot-color: var(--col-pink);" aria-label="ピンク"></button>
+              </div>
+            </div>
+            
+            <div class="builder-buttons">
+              <button type="submit" id="btn-add-timer" class="submit-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                <span id="submit-text">タイマーを追加する</span>
+              </button>
+              <button type="button" id="btn-cancel-edit" class="cancel-btn" style="display: none;">
+                キャンセル
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Timer Sequence List -->
+        <div class="sequence-card card">
+          <div class="card-header">
+            <h2>タイマーリスト</h2>
+            <button id="btn-clear-all" class="text-btn danger" type="button">すべて消去</button>
+          </div>
+          
+          <!-- Dynamic Scroll Container for Timers -->
+          <div class="sequence-list-wrapper">
+            <div id="empty-state" class="empty-state">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <p>追加されたタイマーはありません。<br>上のフォームからプログラムを追加してください。</p>
+            </div>
+            
+            <div id="sequence-list" class="sequence-list">
+              <!-- Dynamically populated timer items will render here -->
+            </div>
+          </div>
+        </div>
+
+      </section>
+      
+    </main>
+
+    <!-- PROGRAM FINISHED MODAL DIALOG -->
+    <!-- Utilizing the modern semantic dialog element with closedby="any" attribute -->
+    <dialog id="completion-dialog" class="completion-dialog" closedby="any" aria-labelledby="dialog-title">
+      <div class="dialog-content">
+        <div class="dialog-icon-wrapper">
+          <svg class="success-chime-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <!-- Shiny animation backdrop -->
+          <div class="dialog-icon-ring"></div>
+        </div>
+        
+        <h2 id="dialog-title">プログラム完了！</h2>
+        <p class="dialog-message">設定されたすべてのタイマーが終了しました。もう一度繰り返しますか、それとも終了しますか？</p>
+        
+        <div class="dialog-buttons">
+          <button id="dialog-btn-repeat" class="dialog-btn primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            最初から繰り返す
+          </button>
+          
+          <button id="dialog-btn-stop" class="dialog-btn secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            </svg>
+            終了する（停止）
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+  </div>
+
+  <!-- Javascript File -->
+  <script src="app.js"></script>
+</body>
+</html>
