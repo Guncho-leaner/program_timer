@@ -252,7 +252,10 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100% !important;
+  height: 100% !important;
   transform: rotate(-90deg); /* Start circular outline at the top center */
+  transform-origin: center;
 }
 
 .progress-ring__track {
@@ -1180,9 +1183,7 @@ html[data-theme="dark"] #theme-toggle::before {
     height: 240px;
   }
 
-  .progress-ring {
-    transform: scale(0.85) rotate(-90deg);
-  }
+  /* progress-ring scales natively via CSS width/height to stay perfectly centered */
 
   .timer-countdown {
     font-size: 2.8rem;
